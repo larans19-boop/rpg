@@ -1,4 +1,3 @@
-# Consulta base trazendo: id da linha do inventário, nome do personagem, nome do item, tipo do item e quantidade
 CONSULTA = """
 SELECT inventario.id, personagens.nome, itens.nome, itens.tipo, inventario.quantidade
 FROM inventario
@@ -8,10 +7,6 @@ JOIN itens ON itens.id = inventario.item_id
 
 
 def incluir(conn, personagem_id, item_id, quantidade):
-    """
-    Insere um registro no inventário indicando que o personagem possui determinado item.
-    Retorna o id gerado.
-    """
     cursor = conn.execute(
         "INSERT INTO inventario (personagem_id, item_id, quantidade) VALUES (?, ?, ?)",
         (personagem_id, item_id, quantidade)
@@ -21,22 +16,11 @@ def incluir(conn, personagem_id, item_id, quantidade):
 
 
 def buscar_por_id(conn, id):
-    """
-    Busca uma entrada específica do inventário pelo seu id.
-    Retorna uma tupla ou None.
-    """
-    cursor = conn.execute(
-        CONSULTA + " WHERE inventario.id = ?", 
-        (id,)
-    )
+    cursor = conn.execute(CONSULTA + " WHERE inventario.id = ?", (id,))
     return cursor.fetchone()
 
 
 def buscar_por_nome(conn, nome):
-    """
-    Busca itens no inventário pelo nome do personagem.
-    Retorna uma lista de tuplas.
-    """
     cursor = conn.execute(
         CONSULTA + " WHERE personagens.nome LIKE ? ORDER BY personagens.nome", 
         ("%" + nome + "%",)
@@ -45,8 +29,5 @@ def buscar_por_nome(conn, nome):
 
 
 def listar(conn):
-    """
-    Lista todos os itens do inventário.
-    """
     cursor = conn.execute(CONSULTA + " ORDER BY inventario.id")
     return cursor.fetchall()
