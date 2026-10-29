@@ -1,4 +1,3 @@
-# Consulta base utilizando JOINs para trazer o apelido do jogador e o nome da classe
 CONSULTA = """
 SELECT personagens.id, personagens.nome, personagens.nivel, jogadores.apelido, classes.nome
 FROM personagens
@@ -8,10 +7,6 @@ JOIN classes ON classes.id = personagens.classe_id
 
 
 def incluir(conn, nome, nivel, jogador_id, classe_id):
-    """
-    Insere um novo personagem.
-    Retorna o id gerado.
-    """
     cursor = conn.execute(
         "INSERT INTO personagens (nome, nivel, jogador_id, classe_id) VALUES (?, ?, ?, ?)",
         (nome, nivel, jogador_id, classe_id)
@@ -21,22 +16,11 @@ def incluir(conn, nome, nivel, jogador_id, classe_id):
 
 
 def buscar_por_id(conn, id):
-    """
-    Busca um personagem pelo seu id com dados legíveis do jogador e classe.
-    Retorna uma tupla ou None.
-    """
-    cursor = conn.execute(
-        CONSULTA + " WHERE personagens.id = ?", 
-        (id,)
-    )
+    cursor = conn.execute(CONSULTA + " WHERE personagens.id = ?", (id,))
     return cursor.fetchone()
 
 
 def buscar_por_nome(conn, nome):
-    """
-    Busca personagens pelo nome do personagem.
-    Retorna uma lista de tuplas.
-    """
     cursor = conn.execute(
         CONSULTA + " WHERE personagens.nome LIKE ? ORDER BY personagens.nome", 
         ("%" + nome + "%",)
@@ -45,8 +29,5 @@ def buscar_por_nome(conn, nome):
 
 
 def listar(conn):
-    """
-    Lista todos os personagens com apelido do jogador e nome da classe.
-    """
     cursor = conn.execute(CONSULTA + " ORDER BY personagens.id")
     return cursor.fetchall()
